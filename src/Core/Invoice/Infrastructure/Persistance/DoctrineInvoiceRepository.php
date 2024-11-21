@@ -5,6 +5,7 @@ namespace App\Core\Invoice\Infrastructure\Persistance;
 use App\Core\Invoice\Domain\Invoice;
 use App\Core\Invoice\Domain\Repository\InvoiceRepositoryInterface;
 use App\Core\Invoice\Domain\Status\InvoiceStatus;
+use App\Core\User\Domain\Exception\UserNotActivatedException;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -29,6 +30,10 @@ class DoctrineInvoiceRepository implements InvoiceRepositoryInterface
 
     public function save(Invoice $invoice): void
     {
+        if ($invoice->getUser()->getActivatedAt() === null) {
+            throw new UserNotActivatedException('Użytkownik jest nieaktywny');
+        }
+
         $this->entityManager->persist($invoice);
 
         $events = $invoice->pullEvents();
