@@ -3,6 +3,7 @@
 namespace App\Core\User\Domain;
 
 use App\Common\EventManager\EventsCollectorTrait;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,14 +26,25 @@ class User
      */
     private string $email;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private ?DateTimeImmutable $activatedAt;
+
     public function __construct(string $email)
     {
         $this->id = null;
         $this->email = $email;
+        $this->activatedAt = null;
     }
 
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    public function getActivatedAt(): ?DateTimeImmutable
+    {
+        return $this->activatedAt;
     }
 }
